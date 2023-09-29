@@ -7,5 +7,7 @@ public interface FollowUseCase {
 
     void follow(Member source, Member target);
 
+    void followWithSynchronized(Member source, Member target);
+
     Follow findFollow(Long sourceId, Long targetId);
 }

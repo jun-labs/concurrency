@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import project.lock.jpa.core.domain.follow.entity.Follow;
 import project.lock.jpa.core.domain.member.entity.Member;
 import project.lock.jpa.core.web.follow.application.FollowUseCase;
+import project.lock.jpa.core.web.member.application.MemberSaveUseCase;
 import project.lock.jpa.core.web.member.application.MemberSearchUseCase;
 import project.lock.jpa.core.web.member.exception.MemberNotFoundException;
 
@@ -14,6 +15,7 @@ import project.lock.jpa.core.web.member.exception.MemberNotFoundException;
 public class FollowFacade {
 
     private final MemberSearchUseCase memberSearchUseCase;
+    private final MemberSaveUseCase memberSaveUseCase;
     private final FollowUseCase followUseCase;
 
     @Transactional
@@ -27,6 +29,22 @@ public class FollowFacade {
             .orElseThrow(MemberNotFoundException::new);
         followUseCase.follow(findSource, findTarget);
     }
+
+    @Transactional
+    public synchronized void followWithSynchronized(
+        Long sourceId,
+        Long targetId
+    ) {
+        Member findSource = memberSearchUseCase.findById(sourceId)
+            .orElseThrow(MemberNotFoundException::new);
+        Member findTarget = memberSearchUseCase.findById(targetId)
+            .orElseThrow(MemberNotFoundException::new);
+        followUseCase.followWithSynchronized(findSource, findTarget);
+
+        memberSaveUseCase.save(findSource);
+        memberSaveUseCase.save(findTarget);
+    }
+
 
     public Follow findFollowBy(
         Long sourceId,

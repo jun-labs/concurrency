@@ -38,6 +38,24 @@ public class FollowingService implements FollowUseCase {
     }
 
     @Override
+    public void followWithSynchronized(
+        Member source,
+        Member target
+    ) {
+        log.info("Before ----x> {}, {}", source, target);
+        Optional<Follow> followHistory = findFollow(source, target);
+        if (followHistory.isPresent()) {
+            Follow follow = followHistory.get();
+            updateUnFollow(source, target);
+            follow.delete();
+            return;
+        }
+        followRepository.save(new Follow(source.getId(), target.getId()));
+        updateFollow(source, target);
+        log.info("After ----x> {}, {}", source, target);
+    }
+
+    @Override
     public Follow findFollow(Long sourceId, Long targetId) {
         return followRepository.findFollowById(sourceId, targetId, Boolean.FALSE)
             .orElseThrow(FollowHistoryNotFoundException::new);
