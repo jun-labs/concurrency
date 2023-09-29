@@ -7,9 +7,6 @@ pluginManagement {
             if (requested.id.id == "io.spring.dependency-management") {
                 useVersion springDependencyManagementVersion as String
             }
-            if (requested.id.id == "org.testcontainers") {
-                useVersion testContainerVersion as String
-            }
         }
     }
 }
