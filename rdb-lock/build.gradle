@@ -1,0 +1,38 @@
+plugins {
+    id("java")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+}
+
+group = "project.lock"
+version = "0.0.1"
+
+java {
+    sourceCompatibility = "17"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // SpringBoot
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+
+    // JPA
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // MySQL
+    implementation(group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion)
+
+    // Test
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // Lombok
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testImplementation("org.projectlombok:lombok:${lombokVersion}")
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}
